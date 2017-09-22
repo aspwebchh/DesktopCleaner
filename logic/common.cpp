@@ -6,6 +6,8 @@
 #include <vector>
 #include <iostream>
 #include <regex>
+#include <io.h>
+#include <direct.h>
 #include "common.h"
 
 #pragma   comment(lib, "shell32.lib")
@@ -41,13 +43,13 @@ const std::string ws2s(const std::wstring& ws)
 	return result;
 }
 
-string getExt( string path) {
+string getExt(string path) {
 	regex reg(".+\\.([^\\.]+$)");
 	smatch match;
-	if (regex_match(path,match,reg)) {
+	if (regex_match(path, match, reg)) {
 		return match[1];
 	}
-	return "";
+	return "Without-Extension";
 }
 
 vector<FileItem> getFiles(string path, bool returnAll) {
@@ -63,6 +65,7 @@ vector<FileItem> getFiles(string path, bool returnAll) {
 					FileItem fileItem;
 					fileItem.path = pathVal;
 					fileItem.fileType = dir;
+					fileItem.ext = "Folder";
 					files.push_back(fileItem);
 					if (returnAll) {
 						auto result = getFiles(p.assign(path).append("\\").append(fileinfo.name), returnAll);
@@ -71,8 +74,7 @@ vector<FileItem> getFiles(string path, bool returnAll) {
 						}
 					}
 				}
-			}
-			else {
+			} else {
 				auto pathVal = p.assign(path).append("\\").append(fileinfo.name);
 				auto ext = getExt(pathVal);
 				FileItem fileItem;
@@ -96,8 +98,7 @@ vector<FileItem> getFiles(string path) {
 void saveFile(string content, string path) {
 	ofstream outfile;
 	outfile.open(path);
-	if (!outfile)
-	{
+	if (!outfile) {
 		cout << "txt文件打开失败!" << endl;
 		exit(0);
 	}
@@ -108,4 +109,19 @@ void saveFile(string content, string path) {
 void saveFile(string content) {
 	auto path = "C:\\Users\\宏鸿\\Desktop\\test.txt";
 	saveFile(content, path);
+}
+
+
+MKDirStatus createDir(string dir) {
+	if (access(dir.c_str(), 0) == -1) {
+		int flag = mkdir(dir.c_str());
+		if (flag == 0) {
+			return success;
+			cout << "make successfully" << endl;
+		} else {
+			return fail;
+		}
+	} else {
+		return exists;
+	}
 }

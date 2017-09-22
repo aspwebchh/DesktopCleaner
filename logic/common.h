@@ -10,11 +10,18 @@ enum FileType {
 	file = 1
 };
 
+enum MKDirStatus {
+	success = 0,
+	exists = 1,
+	fail = 2
+};
+
 struct FileItem {
 	string path;
 	FileType fileType;
 	string ext;
 };
+
 
 const std::wstring s2ws(const std::string& s);
 
@@ -34,4 +41,4 @@ int getArrayLen(T &array) {
 void saveFile(string content, string path);
 void saveFile(string content);
 
-
+MKDirStatus createDir(string dir);
