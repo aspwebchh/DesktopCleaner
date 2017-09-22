@@ -65,6 +65,7 @@ vector<FileItem> getFiles(string path, bool returnAll) {
 					FileItem fileItem;
 					fileItem.path = pathVal;
 					fileItem.fileType = dir;
+					fileItem.fileName = fileinfo.name;
 					fileItem.ext = "Folder";
 					files.push_back(fileItem);
 					if (returnAll) {
@@ -80,7 +81,9 @@ vector<FileItem> getFiles(string path, bool returnAll) {
 				FileItem fileItem;
 				fileItem.path = pathVal;
 				fileItem.fileType = file;
+				fileItem.fileName = fileinfo.name;
 				fileItem.ext = ext;
+				saveFile(pathVal);
 				files.push_back(fileItem);
 			}
 

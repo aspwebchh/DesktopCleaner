@@ -18,6 +18,7 @@ enum MKDirStatus {
 
 struct FileItem {
 	string path;
+	string fileName;
 	FileType fileType;
 	string ext;
 };
