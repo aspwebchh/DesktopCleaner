@@ -11,7 +11,6 @@
 #include "common.h"
 
 
-
 using namespace std;
 
 void add2Group(string key, FileItem fileItem, map<string, vector<FileItem>> &dataSource) {
@@ -54,6 +53,20 @@ string int2String(int value) {
 	return ss.str();
 }
 
+string current() {
+	auto now = time(NULL);
+	auto tim = new tm();
+	localtime_s(tim, &now);
+	auto year = int2String(tim->tm_year + 1900);
+	auto month = int2String(tim->tm_mon + 1);
+	auto day = int2String(tim->tm_mday);
+	auto hour = int2String(tim->tm_hour);
+	auto min = int2String(tim->tm_min);
+	auto sec = int2String(tim->tm_sec);
+	delete tim;
+	return year + "-" + month + "-" + day + " " + hour + ":" + min + ":" + sec;
+}
+
 string allFileDirName() {
 	auto now = time(NULL);
 	auto tim = new tm();
@@ -82,64 +95,68 @@ string first_letter(string& sentence) {
 	return sentence;
 }
 
-int copyFile(string SourceFile, string NewFile) {
-	cout << SourceFile << endl;
-	cout << NewFile << endl;
-	cout << "-----" << endl;
-	ifstream in;
-	ofstream out;
-	in.open(SourceFile, ios::binary);
-	if (in.fail()) {
-		cout << "Error 1: Fail to open the source file." << SourceFile << endl;
-		in.close();
-		out.close();
-		return 0;
-	}
-	out.open(NewFile, ios::binary);
-	if (out.fail()) {
-		cout << "Error 2: Fail to create the new file." << NewFile << endl;
-		out.close();
-		in.close();
-		return 0;
-	} else {
-		out << in.rdbuf();
-		out.close();
-		in.close();
-		return 1;
+
+void appendSummaryItem(vector<SummaryItem> &list, SummaryItem item) {
+	list.push_back(item);
+}
+
+void appendSummaryItem(vector<SummaryItem> &list1, vector<SummaryItem> list2) {
+	for (int i = 0; i < list2.size(); i++) {
+		list1.push_back(list2[i]);
 	}
 }
 
-void moveFiles(vector<FileItem> files, string dirPath) {
+vector<SummaryItem> moveFiles(vector<FileItem> files, string dirPath) {
+	vector<SummaryItem> summaries;
 	for (int i = 0; i < files.size(); i++) {
 		auto fileItem = files[i];
 		if (fileItem.fileType == dir) {
 			vector<FileItem> childFiles = getFiles(fileItem.path);
 			auto newPath = dirPath + "\\" + fileItem.fileName;
 			createDir(newPath);
-			moveFiles(childFiles, newPath);
+			auto result = moveFiles(childFiles, newPath);
+			appendSummaryItem(summaries, result);
 		} else {
 			auto newPath = dirPath + "\\" + fileItem.fileName;
-			copyFile(fileItem.path, newPath);
+			SummaryItem summaryItem;
+			summaryItem.fileItem = fileItem;
+			summaryItem.newPath = newPath;
+			summaryItem.time = current();
+			appendSummaryItem(summaries, summaryItem);
+			//copyFile(fileItem.path, newPath);
 		}
 	}
+	return summaries;
 }
 
+
 int main() {
+
 	auto path = getDesktopPath() + "\\test_desktop";
 	auto files = getFiles(path);
 	auto fileGroup = group(files);
 	string dir = path + "\\" + allFileDirName();
 	createDir(dir);
 
+	vector<SummaryItem> summaries;
+
 	map<string, vector<FileItem>>::iterator it;
 	for (it = fileGroup.begin(); it != fileGroup.end(); it++) {
 		string ext = (it->first);
-		first_letter(ext);
+		if (ext == "lnk") {
+			continue;
+		}
 		auto dirPath = dir + "\\" + ext;
 		createDir(dirPath);
 		auto files = it->second;
-		moveFiles(files, dirPath);
+		auto result =  moveFiles(files, dirPath);
+		appendSummaryItem(summaries, result);
 	}
+
+	auto summaryResult = new SummaryResult();
+	summaryResult->save(summaries, dir);
+	delete summaryResult;
+
 	cout << "done" << endl;
 	cin.get();
 	return 0;

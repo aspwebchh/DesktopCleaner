@@ -10,9 +10,14 @@
 #include <direct.h>
 #include "common.h"
 
-#pragma   comment(lib, "shell32.lib")
+#pragma comment(lib, "shell32.lib")
 
 using namespace std;
+
+
+void str2Lower(string &s) {
+	transform(s.begin(), s.end(), s.begin(), ::tolower);
+}
 
 const std::wstring s2ws(const std::string& s)
 {
@@ -46,10 +51,14 @@ const std::string ws2s(const std::wstring& ws)
 string getExt(string path) {
 	regex reg(".+\\.([^\\.]+$)");
 	smatch match;
+	string ext;
 	if (regex_match(path, match, reg)) {
-		return match[1];
+		ext = match[1];
+		str2Lower(ext);
+	} else {
+		ext = "Without-Extension";
 	}
-	return "Without-Extension";
+	return ext;
 }
 
 vector<FileItem> getFiles(string path, bool returnAll) {
@@ -125,5 +134,32 @@ MKDirStatus createDir(string dir) {
 		}
 	} else {
 		return exists;
+	}
+}
+
+int copyFile(string SourceFile, string NewFile) {
+	//cout << SourceFile << endl;
+	//cout << NewFile << endl;
+	//cout << "-----" << endl;
+	ifstream in;
+	ofstream out;
+	in.open(SourceFile, ios::binary);
+	if (in.fail()) {
+		cout << "Error 1: Fail to open the source file." << SourceFile << endl;
+		in.close();
+		out.close();
+		return 0;
+	}
+	out.open(NewFile, ios::binary);
+	if (out.fail()) {
+		cout << "Error 2: Fail to create the new file." << NewFile << endl;
+		out.close();
+		in.close();
+		return 0;
+	} else {
+		out << in.rdbuf();
+		out.close();
+		in.close();
+		return 1;
 	}
 }

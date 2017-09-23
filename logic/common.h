@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <string>
+#include "tinyxml.h"
 
 using namespace std;
 
@@ -43,3 +44,22 @@ void saveFile(string content, string path);
 void saveFile(string content);
 
 MKDirStatus createDir(string dir);
+
+
+void str2Lower(string &s);
+
+int copyFile(string SourceFile, string NewFile);
+
+
+struct SummaryItem {
+	FileItem fileItem;
+	string newPath;
+	string time;
+};
+
+class SummaryResult {
+private :
+	TiXmlElement * xmlNode(string name, string value);
+public:
+	void save(vector<SummaryItem> &summaries , string root);
+};
