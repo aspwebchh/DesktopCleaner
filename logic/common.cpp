@@ -83,7 +83,6 @@ vector<FileItem> getFiles(string path, bool returnAll) {
 				fileItem.fileType = file;
 				fileItem.fileName = fileinfo.name;
 				fileItem.ext = ext;
-				saveFile(pathVal);
 				files.push_back(fileItem);
 			}
 

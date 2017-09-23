@@ -40,7 +40,7 @@ string getDesktopPath() {
 	SHGetSpecialFolderPath(0, szPath, CSIDL_DESKTOPDIRECTORY, 0);
 	wstring ws = szPath;
 	auto path = ws2s(szPath);
-	regex reg("(.+\\w).*");
+	regex reg("(.+desktop).*", regex::icase);
 	smatch mc;
 	if (regex_match(path, mc, reg)) {
 		path = mc[1];
@@ -85,6 +85,7 @@ string first_letter(string& sentence) {
 int copyFile(string SourceFile, string NewFile) {
 	cout << SourceFile << endl;
 	cout << NewFile << endl;
+	cout << "-----" << endl;
 	ifstream in;
 	ofstream out;
 	in.open(SourceFile, ios::binary);
@@ -127,7 +128,6 @@ int main() {
 	auto path = getDesktopPath() + "\\test_desktop";
 	auto files = getFiles(path);
 	auto fileGroup = group(files);
-
 	string dir = path + "\\" + allFileDirName();
 	createDir(dir);
 
