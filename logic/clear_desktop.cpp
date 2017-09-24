@@ -18,6 +18,7 @@
 
 
 using namespace std;
+using namespace rapidjson;
 
 void add2Group(string key, FileItem fileItem, map<string, vector<FileItem>> &dataSource) {
 	map<string, vector<FileItem>>::iterator found = dataSource.find(key);
@@ -135,29 +136,58 @@ vector<SummaryItem> moveFiles(vector<FileItem> files, string dirPath) {
 	return summaries;
 }
 
+Value createValue(string val, Document & doc) {
+	Value item(kObjectType);
+	Value value;
+	value.SetString( val.c_str(), doc.GetAllocator());
+	return value;
+}
 
-void testJSON()
-{
-	using namespace rapidjson;
-	const char* json = "{\"project\":\"rapidjson\",\"stars\":10}";
-	Document d;
-	d.Parse(json);
-	// 2. 利用 DOM 作出修改。
-	Value& s = d["stars"];
-	s.SetInt(s.GetInt() + 1);
-	// 3. 把 DOM 转换（stringify）成 JSON。
+Value createValue(int val, Document & doc) {
+	Value item(kObjectType);
+	Value value;
+	value.SetInt(val);
+	return value;
+}
+
+void files2JSON(vector<FileItem>& files, Document& doc, Value& items) {
+	for (auto fileItem : files) {
+		Value item(kObjectType);
+		item.AddMember("FileName", createValue(fileItem.fileName,doc), doc.GetAllocator());
+		item.AddMember("FileExt", createValue(fileItem.ext, doc), doc.GetAllocator());
+		item.AddMember("FilePath", createValue(fileItem.path, doc), doc.GetAllocator());
+		item.AddMember("FileType", createValue(fileItem.fileType, doc), doc.GetAllocator());
+		items.PushBack(item, doc.GetAllocator());
+	}
+}
+
+char * GetFileInfoList() {
+	auto path = getDesktopPath() + "\\test_desktop";
+	auto files = getFiles(path);
+	auto fileGroup = group(files);
+	Document doc;
+	doc.SetObject();
+	map<string, vector<FileItem>>::iterator it;
+	for (it = fileGroup.begin(); it != fileGroup.end(); it++) {
+		auto ext = it->first;
+		auto files = it->second;
+		Value out(kArrayType);
+		files2JSON(files, doc, out);
+		Value key = createValue(ext,doc);
+		doc.AddMember(key,out, doc.GetAllocator());
+	}
 	StringBuffer buffer;
 	Writer<StringBuffer> writer(buffer);
-	d.Accept(writer);
-	// Output {"project":"rapidjson","stars":11}
-	std::cout << buffer.GetString() << std::endl;
+	doc.Accept(writer);
+	string jsonString = buffer.GetString();
+	const char *charPtr = jsonString.c_str();
+	char *result = new char[strlen(charPtr)];
+	strcpy(result, charPtr);
+	return result;
 }
+
+
 int main() {
-
-	testJSON();
-
-	cin.get();
-
 	auto path = getDesktopPath() + "\\test_desktop";
 	auto files = getFiles(path);
 	auto fileGroup = group(files);
@@ -191,6 +221,3 @@ int main() {
 
 
 
-char * test(int a, int b) {
-	return "abc123我的天";
-}

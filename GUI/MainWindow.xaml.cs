@@ -21,17 +21,10 @@ namespace GUI {
     public partial class MainWindow : Window {
         public MainWindow() {
             InitializeComponent();
-            IntPtr intPtr = CFunction.test(1,2);
+            IntPtr intPtr = CFunction.GetFileInfoList();
 
             string data = Marshal.PtrToStringAnsi(intPtr);
             MessageBox.Show(data);
         }
-    }
-
-
-    public class CFunction {
-        [DllImport("clear_desktop.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
-        public extern static IntPtr test( int x, int y );
-
     }
 }
