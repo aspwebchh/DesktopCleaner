@@ -12,3 +12,4 @@ C:\dev\clear_desktop\GUI\obj\Debug\GUI.csproj.GenerateResource.Cache
 C:\dev\clear_desktop\GUI\obj\Debug\GUI.exe
 C:\dev\clear_desktop\GUI\obj\Debug\GUI.pdb
 C:\dev\clear_desktop\GUI\obj\Debug\GUI.csprojResolveAssemblyReference.cache
+C:\dev\clear_desktop\GUI\bin\Debug\Newtonsoft.Json.dll
