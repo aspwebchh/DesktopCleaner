@@ -1,8 +1,10 @@
 #pragma once
 
+
 #include <vector>
 #include <string>
 #include "tinyxml.h"
+
 
 using namespace std;
 
@@ -63,3 +65,4 @@ private :
 public:
 	void save(vector<SummaryItem> &summaries , string root);
 };
+

@@ -9,6 +9,7 @@
 #include <regex>
 #include <map>
 #include "common.h"
+#include "export.h"
 
 
 using namespace std;
@@ -132,6 +133,8 @@ vector<SummaryItem> moveFiles(vector<FileItem> files, string dirPath) {
 
 int main() {
 
+
+
 	auto path = getDesktopPath() + "\\test_desktop";
 	auto files = getFiles(path);
 	auto fileGroup = group(files);
@@ -162,3 +165,9 @@ int main() {
 	return 0;
 }
 
+
+
+
+char * test(int a, int b) {
+	return "abc123ÎÒµÄÌì";
+}

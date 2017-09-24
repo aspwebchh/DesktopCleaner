@@ -38,7 +38,6 @@ void SummaryResult::save(vector<SummaryItem> &summaries, string root) {
 
 		rootEle->LinkEndChild(fileItemEle);
 	}
-
 	doc.LinkEndChild(decl);
 	doc.LinkEndChild(rootEle);
 	doc.SaveFile((root + "\\summary.xml").c_str());
