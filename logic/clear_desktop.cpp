@@ -15,6 +15,10 @@
 #include "rapidjson\writer.h"
 #include "rapidjson\stringbuffer.h"
 
+#include "md5.h"
+
+#include "filehandler.h"
+
 
 
 using namespace std;
@@ -54,11 +58,6 @@ string getDesktopPath() {
 	return path;
 }
 
-string int2String(int value) {
-	stringstream ss;
-	ss << value;
-	return ss.str();
-}
 
 string current() {
 	auto now = time(NULL);
@@ -74,16 +73,7 @@ string current() {
 	return year + "-" + month + "-" + day + " " + hour + ":" + min + ":" + sec;
 }
 
-string allFileDirName() {
-	auto now = time(NULL);
-	auto tim = new tm();
-	localtime_s(tim, &now);
-	auto year = int2String(tim->tm_year + 1900);
-	auto month = int2String(tim->tm_mon + 1);
-	auto day = int2String(tim->tm_mday);
-	delete tim;
-	return year + "-" + month + "-" + day;
-}
+
 
 string first_letter(string& sentence) {
 	string::iterator it = sentence.begin();
@@ -186,8 +176,7 @@ char * GetFileInfoList() {
 	return result;
 }
 
-
-int main() {
+void moveAll() {
 	auto path = getDesktopPath() + "\\test_desktop";
 	auto files = getFiles(path);
 	auto fileGroup = group(files);
@@ -205,15 +194,23 @@ int main() {
 		auto dirPath = dir + "\\" + ext;
 		createDir(dirPath);
 		auto files = it->second;
-		auto result =  moveFiles(files, dirPath);
+		auto result = moveFiles(files, dirPath);
 		appendSummaryItem(summaries, result);
 	}
 
 	auto summaryResult = new SummaryResult();
 	summaryResult->save(summaries, dir);
 	delete summaryResult;
-
 	cout << "done" << endl;
+}
+
+
+int main() {
+	const string targetPath = getDesktopPath() + "\\temp_target";
+	auto fileHandler = new FileHandler(targetPath);
+	fileHandler->handleFile("");
+	delete fileHandler;
+
 	cin.get();
 	return 0;
 }

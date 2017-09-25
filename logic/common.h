@@ -3,6 +3,9 @@
 
 #include <vector>
 #include <string>
+#include <sstream>
+#include <stdio.h>
+#include <time.h>
 #include "tinyxml.h"
 
 
@@ -20,6 +23,7 @@ enum MKDirStatus {
 };
 
 struct FileItem {
+	string id;
 	string path;
 	string fileName;
 	FileType fileType;
@@ -66,3 +70,8 @@ public:
 	void save(vector<SummaryItem> &summaries , string root);
 };
 
+
+string int2String(int value);
+
+
+string allFileDirName();

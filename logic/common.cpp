@@ -9,6 +9,7 @@
 #include <io.h>
 #include <direct.h>
 #include "common.h"
+#include "md5.h"
 
 #pragma comment(lib, "shell32.lib")
 
@@ -76,6 +77,7 @@ vector<FileItem> getFiles(string path, bool returnAll) {
 					fileItem.fileType = dir;
 					fileItem.fileName = fileinfo.name;
 					fileItem.ext = "Folder";
+					fileItem.id = MD5(pathVal).toStr();
 					files.push_back(fileItem);
 					if (returnAll) {
 						auto result = getFiles(p.assign(path).append("\\").append(fileinfo.name), returnAll);
@@ -92,6 +94,7 @@ vector<FileItem> getFiles(string path, bool returnAll) {
 				fileItem.fileType = file;
 				fileItem.fileName = fileinfo.name;
 				fileItem.ext = ext;
+				fileItem.id = MD5(pathVal).toStr();
 				files.push_back(fileItem);
 			}
 
@@ -162,4 +165,22 @@ int copyFile(string SourceFile, string NewFile) {
 		in.close();
 		return 1;
 	}
+}
+
+string int2String(int value) {
+	stringstream ss;
+	ss << value;
+	return ss.str();
+}
+
+
+string allFileDirName() {
+	auto now = time(NULL);
+	auto tim = new tm();
+	localtime_s(tim, &now);
+	auto year = int2String(tim->tm_year + 1900);
+	auto month = int2String(tim->tm_mon + 1);
+	auto day = int2String(tim->tm_mday);
+	delete tim;
+	return year + "-" + month + "-" + day;
 }
