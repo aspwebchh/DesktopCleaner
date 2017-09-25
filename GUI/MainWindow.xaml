@@ -5,8 +5,42 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GUI"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        Title="MainWindow" WindowStartupLocation="CenterScreen">
     <Grid>
-        
+        <ListView x:Name="listView" ItemsSource="{Binding}">
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="Height" Value="30" />
+                </Style>
+            </ListView.ItemContainerStyle>
+            <ListView.View>
+                <GridView>
+                    <GridView.Columns>
+                        <GridViewColumn DisplayMemberBinding="{Binding Path=FileName}" Width="200">
+                            <GridViewColumnHeader Content="名称" Padding="5" HorizontalContentAlignment="Left"/>
+                        </GridViewColumn>
+                        <GridViewColumn DisplayMemberBinding="{Binding Path=FileExt}" Width="100">
+                            <GridViewColumnHeader Content="类型" Padding="5" HorizontalContentAlignment="Left"/>
+                        </GridViewColumn>
+                        <!--<GridViewColumn Header="操作">
+
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <WrapPanel>
+                                        <Button  Grid.Row="0" CommandParameter="{Binding Path=id}" Style="{StaticResource ButtonListViewItem}" Click="Button_Click">
+                                            <TextBlock Text="删除"></TextBlock>
+                                        </Button>
+                                        <Button  CommandParameter="{Binding Path=id}" Grid.Row="0" Style="{StaticResource ButtonListViewItem}" Click="Button_Click_1">
+                                            <TextBlock Text="编辑"></TextBlock>
+                                        </Button>
+                                    </WrapPanel>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+
+                        </GridViewColumn>-->
+                    </GridView.Columns>
+                </GridView>
+            </ListView.View>
+        </ListView>
     </Grid>
 </Window>

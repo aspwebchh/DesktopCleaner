@@ -15,6 +15,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Web.Script.Serialization;
 using Newtonsoft.Json;
+using System.Data;
 
 namespace GUI {
     /// <summary>
@@ -24,8 +25,24 @@ namespace GUI {
         public MainWindow() {
             InitializeComponent();
 
-            var result = FileInfoList();
-            MessageBox.Show(result.Count.ToString());
+            var result = ToTable(FileInfoList());
+            listView.DataContext = result;
+        }
+
+
+        private DataTable ToTable( List<Dictionary<string, object>> fileList) {
+            var dt = new DataTable();
+            var fileNameCol = new DataColumn("FileName", Type.GetType("System.String"));
+            var fileExtCol = new DataColumn("FileExt", Type.GetType("System.String"));
+            dt.Columns.Add(fileNameCol);
+            dt.Columns.Add(fileExtCol);
+            fileList.ForEach(item => {
+                var row = dt.NewRow();
+                row ["FileName"] = item ["FileName"];
+                row ["FileExt"] = item ["FileExt"];
+                dt.Rows.Add(row);
+            });
+            return dt;
         }
 
         private List<Dictionary<string, object>> FileInfoList() {
