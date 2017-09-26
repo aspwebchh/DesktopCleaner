@@ -9,6 +9,7 @@
 #include "tinyxml.h"
 
 
+
 using namespace std;
 
 enum FileType {
@@ -67,6 +68,9 @@ bool copyFile(string SourceFile, string NewFile);
 class SummaryResult {
 private :
 	TiXmlElement * xmlNode(string name, string value);
+	void FullElements(TiXmlElement *root, const vector<SummaryItem> &summaries);
+	bool CheckNode(TiXmlElement *node, const string &id);
+	bool ExistsNode(TiXmlElement *root, const string &id);
 public:
 	void save(vector<SummaryItem> &summaries , string root);
 };
