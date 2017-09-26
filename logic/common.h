@@ -54,7 +54,7 @@ MKDirStatus createDir(string dir);
 
 void str2Lower(string &s);
 
-int copyFile(string SourceFile, string NewFile);
+bool copyFile(string SourceFile, string NewFile);
 
 
 struct SummaryItem {

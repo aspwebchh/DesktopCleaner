@@ -89,6 +89,9 @@ vector<FileItem> getFiles(string path, bool returnAll) {
 			} else {
 				auto pathVal = p.assign(path).append("\\").append(fileinfo.name);
 				auto ext = getExt(pathVal);
+				if (ext == "lnk") {
+					continue;
+				}
 				FileItem fileItem;
 				fileItem.path = pathVal;
 				fileItem.fileType = file;
@@ -140,7 +143,7 @@ MKDirStatus createDir(string dir) {
 	}
 }
 
-int copyFile(string SourceFile, string NewFile) {
+bool copyFile(string SourceFile, string NewFile) {
 	//cout << SourceFile << endl;
 	//cout << NewFile << endl;
 	//cout << "-----" << endl;
@@ -151,19 +154,19 @@ int copyFile(string SourceFile, string NewFile) {
 		cout << "Error 1: Fail to open the source file." << SourceFile << endl;
 		in.close();
 		out.close();
-		return 0;
+		return false;
 	}
 	out.open(NewFile, ios::binary);
 	if (out.fail()) {
 		cout << "Error 2: Fail to create the new file." << NewFile << endl;
 		out.close();
 		in.close();
-		return 0;
+		return false;
 	} else {
 		out << in.rdbuf();
 		out.close();
 		in.close();
-		return 1;
+		return true;
 	}
 }
 

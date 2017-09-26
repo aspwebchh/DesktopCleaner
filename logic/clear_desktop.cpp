@@ -206,10 +206,13 @@ void moveAll() {
 
 
 int main() {
+	const auto deskTopPath = getDesktopPath() + "\\test_desktop";
 	const string targetPath = getDesktopPath() + "\\temp_target";
-	auto fileHandler = new FileHandler(targetPath);
-	fileHandler->handleFile("");
+	
+	auto fileHandler = new FileHandler(deskTopPath, targetPath);
+	fileHandler->exec();
 	delete fileHandler;
+	cout << "done" << endl;
 
 	cin.get();
 	return 0;
