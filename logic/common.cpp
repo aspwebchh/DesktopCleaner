@@ -187,3 +187,18 @@ string allFileDirName() {
 	delete tim;
 	return year + "-" + month + "-" + day;
 }
+
+
+string current() {
+	auto now = time(NULL);
+	auto tim = new tm();
+	localtime_s(tim, &now);
+	auto year = int2String(tim->tm_year + 1900);
+	auto month = int2String(tim->tm_mon + 1);
+	auto day = int2String(tim->tm_mday);
+	auto hour = int2String(tim->tm_hour);
+	auto min = int2String(tim->tm_min);
+	auto sec = int2String(tim->tm_sec);
+	delete tim;
+	return year + "-" + month + "-" + day + " " + hour + ":" + min + ":" + sec;
+}

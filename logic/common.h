@@ -30,6 +30,12 @@ struct FileItem {
 	string ext;
 };
 
+struct SummaryItem {
+	FileItem fileItem;
+	string newPath;
+	string time;
+};
+
 
 const std::wstring s2ws(const std::string& s);
 
@@ -57,11 +63,6 @@ void str2Lower(string &s);
 bool copyFile(string SourceFile, string NewFile);
 
 
-struct SummaryItem {
-	FileItem fileItem;
-	string newPath;
-	string time;
-};
 
 class SummaryResult {
 private :
@@ -75,3 +76,6 @@ string int2String(int value);
 
 
 string allFileDirName();
+
+
+string current();

@@ -31,6 +31,7 @@ void SummaryResult::save(vector<SummaryItem> &summaries, string root) {
 		TiXmlElement * fileExtEle = xmlNode("FileExt", summaryItem.fileItem.ext.c_str()); 
 		TiXmlElement * timeEle = xmlNode("Time", summaryItem.time.c_str()); 
 
+		fileItemEle->SetAttribute("id", summaryItem.fileItem.id.c_str());
 		fileItemEle->LinkEndChild(pathEle);
 		fileItemEle->LinkEndChild(fileNameEle);
 		fileItemEle->LinkEndChild(fileExtEle);
@@ -40,5 +41,7 @@ void SummaryResult::save(vector<SummaryItem> &summaries, string root) {
 	}
 	doc.LinkEndChild(decl);
 	doc.LinkEndChild(rootEle);
-	doc.SaveFile((root + "\\summary.xml").c_str());
+	
+	auto today = allFileDirName();
+	doc.SaveFile((root + "\\"+ today +".xml").c_str());
 }

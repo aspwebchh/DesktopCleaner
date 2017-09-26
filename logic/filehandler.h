@@ -1,6 +1,7 @@
 #pragma once
 
 #include "common.h"
+#include <vector>
 
 
 using namespace std;
@@ -9,12 +10,26 @@ class FileHandler {
 private:
 	string targetPath;
 	string desktopPath;
+	vector<SummaryItem> summaries;
+	string today;
+
+	void addSummary(const FileItem &fileItem, const string &newPath) {
+		SummaryItem summaryItem;
+		summaryItem.fileItem = fileItem;
+		summaryItem.time = current();
+		summaryItem.newPath = newPath;
+		summaries.push_back(summaryItem);
+	}
+
 	bool HandleFile(const FileItem &fileItem, const string &newDirPath) {
 		if (fileItem.fileType == dir) {
 			return false;
 		}
 		auto newFilePath = newDirPath + "\\" + fileItem.fileName;
 		auto success = copyFile(fileItem.path, newFilePath);
+		if (success) {
+			this->addSummary(fileItem, newFilePath);
+		}
 		return success;
 	}
 
@@ -43,12 +58,14 @@ public:
 	FileHandler(const string &desktopPath,  const string &targetPath) {
 		this->desktopPath = desktopPath;
 		this->targetPath = targetPath;
+		this->today = allFileDirName();
 	}
-	void exec() {
+	const vector<SummaryItem>& exec() {
 		auto files = getFiles(this->desktopPath);
-		auto path = this->targetPath + "\\" + allFileDirName();
+		auto path = this->targetPath + "\\" + today;
 		if (this->createDirectory(path)) {
 			this->MoveFiles(files, path);
 		}
+		return this->summaries;
 	}
 };
