@@ -194,7 +194,7 @@ int main() {
 	const string targetPath = getDesktopPath() + "\\temp_target";
 	
 	FileHandler fileHandler(deskTopPath, targetPath);
-	auto summaries = fileHandler.exec();
+	auto summaries = fileHandler.ClearAll();
 
 	SummaryResult sumaryResult;
 	sumaryResult.save(summaries, targetPath);

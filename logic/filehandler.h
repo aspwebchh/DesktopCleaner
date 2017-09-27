@@ -9,9 +9,9 @@ using namespace std;
 class FileHandler {
 private:
 	string targetPath;
+	string todayTargetPath;
 	string desktopPath;
 	vector<SummaryItem> summaries;
-	string today;
 
 	void addSummary(const FileItem &fileItem, const string &newPath) {
 		SummaryItem summaryItem;
@@ -46,6 +46,7 @@ private:
 			}
 		}
 	}
+
 	bool createDirectory( const string &dir ) {
 		auto createdResult = createDir(dir);
 		if (createdResult == success || createdResult == exists) {
@@ -54,18 +55,24 @@ private:
 			return false;
 		}
 	}
+
 public:
 	FileHandler(const string &desktopPath,  const string &targetPath) {
 		this->desktopPath = desktopPath;
 		this->targetPath = targetPath;
-		this->today = allFileDirName();
+		this->todayTargetPath = targetPath + "\\" + allFileDirName();
 	}
-	const vector<SummaryItem>& exec() {
-		auto files = getFiles(this->desktopPath);
-		auto path = this->targetPath + "\\" + today;
-		if (this->createDirectory(path)) {
-			this->MoveFiles(files, path);
+
+	const vector<SummaryItem>& Clear(vector<FileItem> &files) {
+		this->summaries.clear();
+		if (this->createDirectory(this->todayTargetPath)) {
+			this->MoveFiles(files, this->todayTargetPath);
 		}
 		return this->summaries;
+	}
+
+	const vector<SummaryItem>& ClearAll(){
+		auto files = getFiles(this->desktopPath);
+		return this->Clear(files);
 	}
 };
