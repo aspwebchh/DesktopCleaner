@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include <iostream>
 #include <string>
-#include <Windows.h>
-#include <shlobj.h>
+
+
 #include <fstream>
 #include <sstream>
 #include <string>
@@ -23,6 +23,12 @@
 
 using namespace std;
 using namespace rapidjson;
+
+
+static const auto deskTopPath = getDesktopPath() + "\\test_desktop";
+static const string targetPath = getDesktopPath() + "\\temp_target";
+static FileHandler fileHandler(deskTopPath, targetPath);
+
 
 void add2Group(string key, FileItem fileItem, map<string, vector<FileItem>> &dataSource) {
 	map<string, vector<FileItem>>::iterator found = dataSource.find(key);
@@ -45,38 +51,8 @@ map<string, vector<FileItem>> group(vector<FileItem> files) {
 	return dataSource;
 }
 
-string getDesktopPath() {
-	TCHAR szPath[MAX_PATH];
-	SHGetSpecialFolderPath(0, szPath, CSIDL_DESKTOPDIRECTORY, 0);
-	wstring ws = szPath;
-	auto path = ws2s(szPath);
-	regex reg("(.+desktop).*", regex::icase);
-	smatch mc;
-	if (regex_match(path, mc, reg)) {
-		path = mc[1];
-	}
-	return path;
-}
 
-
-string first_letter(string& sentence) {
-	string::iterator it = sentence.begin();
-	bool space_flag = true;
-
-	while (it != sentence.end()) {
-		if (isalpha(*it) && space_flag) {
-			*it = toupper(*it);
-			space_flag = false;
-		}
-		if (isspace(*it)) {
-			space_flag = true;
-		}
-		it++;
-	}
-	return sentence;
-}
-
-
+/*
 void appendSummaryItem(vector<SummaryItem> &list, SummaryItem item) {
 	list.push_back(item);
 }
@@ -109,6 +85,7 @@ vector<SummaryItem> moveFiles(vector<FileItem> files, string dirPath) {
 	}
 	return summaries;
 }
+*/
 
 Value createValue(string val, Document & doc) {
 	Value item(kObjectType);
@@ -136,8 +113,7 @@ void files2JSON(vector<FileItem>& files, Document& doc, Value& items) {
 }
 
 char * GetFileInfoList() {
-	auto path = getDesktopPath() + "\\test_desktop";
-	auto files = getFiles(path);
+	auto files = fileHandler.GetAllDesktopFile();
 	auto fileGroup = group(files);
 	Document doc;
 	doc.SetObject();
@@ -160,7 +136,8 @@ char * GetFileInfoList() {
 	return result;
 }
 
-void moveAll() {
+
+/*void moveAll() {
 	auto path = getDesktopPath() + "\\test_desktop";
 	auto files = getFiles(path);
 	auto fileGroup = group(files);
@@ -186,14 +163,10 @@ void moveAll() {
 	summaryResult->save(summaries, dir);
 	delete summaryResult;
 	cout << "done" << endl;
-}
+}*/
 
 
 int main() {
-	const auto deskTopPath = getDesktopPath() + "\\test_desktop";
-	const string targetPath = getDesktopPath() + "\\temp_target";
-	
-	FileHandler fileHandler(deskTopPath, targetPath);
 	auto summaries = fileHandler.ClearAll();
 
 	SummaryResult sumaryResult;

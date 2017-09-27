@@ -83,3 +83,7 @@ string allFileDirName();
 
 
 string current();
+
+string first_letter(string& sentence);
+
+string getDesktopPath();

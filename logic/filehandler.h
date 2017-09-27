@@ -3,8 +3,8 @@
 #include "common.h"
 #include <vector>
 
-
 using namespace std;
+
 
 class FileHandler {
 private:
@@ -12,6 +12,8 @@ private:
 	string todayTargetPath;
 	string desktopPath;
 	vector<SummaryItem> summaries;
+	vector<FileItem> allDesktopFiles;
+	bool desktopFilesLoaded = false;
 
 	void addSummary(const FileItem &fileItem, const string &newPath) {
 		SummaryItem summaryItem;
@@ -72,7 +74,17 @@ public:
 	}
 
 	const vector<SummaryItem>& ClearAll(){
-		auto files = getFiles(this->desktopPath);
+		auto files = this->GetAllDesktopFile();
 		return this->Clear(files);
+	}
+
+	const vector<FileItem> GetAllDesktopFile() {
+		if (this->desktopFilesLoaded) {
+			return this->allDesktopFiles;
+		} else {
+			this->allDesktopFiles = getFiles(this->desktopPath);
+			this->desktopFilesLoaded = true;
+			return this->allDesktopFiles;
+		}
 	}
 };

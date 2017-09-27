@@ -8,6 +8,8 @@
 #include <regex>
 #include <io.h>
 #include <direct.h>
+#include <Windows.h>
+#include <shlobj.h>
 #include "common.h"
 #include "md5.h"
 
@@ -202,4 +204,35 @@ string current() {
 	auto sec = int2String(tim->tm_sec);
 	delete tim;
 	return year + "-" + month + "-" + day + " " + hour + ":" + min + ":" + sec;
+}
+
+
+string first_letter(string& sentence) {
+	string::iterator it = sentence.begin();
+	bool space_flag = true;
+
+	while (it != sentence.end()) {
+		if (isalpha(*it) && space_flag) {
+			*it = toupper(*it);
+			space_flag = false;
+		}
+		if (isspace(*it)) {
+			space_flag = true;
+		}
+		it++;
+	}
+	return sentence;
+}
+
+string getDesktopPath() {
+	TCHAR szPath[MAX_PATH];
+	SHGetSpecialFolderPath(0, szPath, CSIDL_DESKTOPDIRECTORY, 0);
+	wstring ws = szPath;
+	auto path = ws2s(szPath);
+	regex reg("(.+desktop).*", regex::icase);
+	smatch mc;
+	if (regex_match(path, mc, reg)) {
+		path = mc[1];
+	}
+	return path;
 }
