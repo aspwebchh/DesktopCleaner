@@ -72,7 +72,7 @@ private :
 	bool CheckNode(TiXmlElement *node, const string &id);
 	bool ExistsNode(TiXmlElement *root, const string &id);
 public:
-	void save(vector<SummaryItem> &summaries , string root);
+	void save(const vector<SummaryItem> &summaries , string root);
 };
 
 

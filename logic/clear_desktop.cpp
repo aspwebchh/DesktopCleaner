@@ -8,6 +8,7 @@
 #include <string>
 #include <regex>
 #include <map>
+#include <tuple>
 #include "common.h"
 #include "export.h"
 
@@ -48,40 +49,11 @@ map<string, vector<FileItem>> group(vector<FileItem> files) {
 	return dataSource;
 }
 
-/*
-void appendSummaryItem(vector<SummaryItem> &list, SummaryItem item) {
-	list.push_back(item);
-}
 
-void appendSummaryItem(vector<SummaryItem> &list1, vector<SummaryItem> list2) {
-	for (int i = 0; i < list2.size(); i++) {
-		list1.push_back(list2[i]);
-	}
+void SaveSummaries(const vector<SummaryItem> &summaries) {
+	SummaryResult sumaryResult;
+	sumaryResult.save(summaries, targetPath);
 }
-
-vector<SummaryItem> moveFiles(vector<FileItem> files, string dirPath) {
-	vector<SummaryItem> summaries;
-	for (int i = 0; i < files.size(); i++) {
-		auto fileItem = files[i];
-		if (fileItem.fileType == dir) {
-			vector<FileItem> childFiles = getFiles(fileItem.path);
-			auto newPath = dirPath + "\\" + fileItem.fileName;
-			createDir(newPath);
-			auto result = moveFiles(childFiles, newPath);
-			appendSummaryItem(summaries, result);
-		} else {
-			auto newPath = dirPath + "\\" + fileItem.fileName;
-			SummaryItem summaryItem;
-			summaryItem.fileItem = fileItem;
-			summaryItem.newPath = newPath;
-			summaryItem.time = current();
-			appendSummaryItem(summaries, summaryItem);
-			//copyFile(fileItem.path, newPath);
-		}
-	}
-	return summaries;
-}
-*/
 
 char * GetFileInfoList() {
 	auto files = fileHandler.GetAllDesktopFile();
@@ -89,39 +61,28 @@ char * GetFileInfoList() {
 	return Convert2Json::GetFileInfoList(fileGroup);
 }
 
-/*void moveAll() {
-	auto path = getDesktopPath() + "\\test_desktop";
-	auto files = getFiles(path);
-	auto fileGroup = group(files);
-	string dir = path + "\\" + allFileDirName();
-	createDir(dir);
-
-	vector<SummaryItem> summaries;
-
-	map<string, vector<FileItem>>::iterator it;
-	for (it = fileGroup.begin(); it != fileGroup.end(); it++) {
-		string ext = (it->first);
-		if (ext == "lnk") {
-			continue;
-		}
-		auto dirPath = dir + "\\" + ext;
-		createDir(dirPath);
-		auto files = it->second;
-		auto result = moveFiles(files, dirPath);
-		appendSummaryItem(summaries, result);
+char * ClearItem(char * id) {
+	string strId(id);
+	tuple<bool,FileItem> result = fileHandler.FindFileItemByID(strId);
+	bool found = get<0>(result);
+	FileItem fileItem = get<1>(result);
+	if (found) {
+		auto summaries = fileHandler.Clear(fileItem);
+		SaveSummaries(summaries);
+		return Convert2Json::ResultJSON(found, "操作成功");
+	} else {
+		return Convert2Json::ResultJSON(found, "ID不存在");
 	}
+}
 
-	auto summaryResult = new SummaryResult();
-	summaryResult->save(summaries, dir);
-	delete summaryResult;
-	cout << "done" << endl;
-}*/
 
 int main() {
+	cout << ClearItem("6925e86167105a1a19ca82c0da3a538e") << endl;
+	cin.get();
+	
 	auto summaries = fileHandler.ClearAll();
 
-	SummaryResult sumaryResult;
-	sumaryResult.save(summaries, targetPath);
+	SaveSummaries(summaries);
 
 	cout << "done" << endl;
 

@@ -67,7 +67,7 @@ void SummaryResult::FullElements(TiXmlElement *root, const vector<SummaryItem> &
 }
 
 
-void SummaryResult::save( vector<SummaryItem> &summaries, string root) {
+void SummaryResult::save(const vector<SummaryItem> &summaries, string root) {
 	auto today = allFileDirName();
 	auto filePath = (root + "\\" + today + ".xml");
 

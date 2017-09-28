@@ -9,5 +9,8 @@ namespace GUI {
     class CFunction {
         [DllImport("clear_desktop.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
         public extern static IntPtr GetFileInfoList();
+
+        [DllImport("clear_desktop.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
+        public extern static IntPtr ClearItem( ref byte id );
     }
 }

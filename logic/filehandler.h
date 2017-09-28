@@ -2,6 +2,7 @@
 
 #include "common.h"
 #include <vector>
+#include <tuple>
 
 using namespace std;
 
@@ -64,7 +65,12 @@ public:
 		this->targetPath = targetPath;
 		this->todayTargetPath = targetPath + "\\" + allFileDirName();
 	}
-
+	const vector<SummaryItem>& Clear(FileItem file) {
+		vector<FileItem> files;
+		files.push_back(file);
+	
+		return this->Clear(files);
+	}
 	const vector<SummaryItem>& Clear(vector<FileItem> &files) {
 		this->summaries.clear();
 		if (this->createDirectory(this->todayTargetPath)) {
@@ -78,7 +84,7 @@ public:
 		return this->Clear(files);
 	}
 
-	const vector<FileItem> GetAllDesktopFile() {
+	const vector<FileItem>& GetAllDesktopFile() {
 		if (this->desktopFilesLoaded) {
 			return this->allDesktopFiles;
 		} else {
@@ -87,4 +93,15 @@ public:
 			return this->allDesktopFiles;
 		}
 	}
+	
+	const tuple<bool, FileItem> FindFileItemByID(string &id) {
+		auto allFiles = this->GetAllDesktopFile();
+		for (auto &file : allFiles) {
+			if (id == file.id) {
+				return{ true,file };
+			}
+		}
+		return{ false,FileItem{} };
+	}
+	
 };
