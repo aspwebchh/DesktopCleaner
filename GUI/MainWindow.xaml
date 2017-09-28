@@ -7,7 +7,28 @@
         mc:Ignorable="d"
         Title="MainWindow" WindowStartupLocation="CenterScreen">
     <Grid>
-        <ListView x:Name="listView" ItemsSource="{Binding}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+
+
+        <WrapPanel Grid.Column="0" Grid.Row="0">
+            <Button VerticalAlignment="Center" HorizontalAlignment="Left" Grid.Column="0" Grid.Row="0">
+                <TextBlock>全选</TextBlock>
+            </Button>
+
+            <Button VerticalAlignment="Center" HorizontalAlignment="Left"  Grid.Column="1" Grid.Row="0" Margin="10,0,0,0">
+                <TextBlock>清理</TextBlock>
+            </Button>
+        </WrapPanel>
+      
+
+
+        <ListView x:Name="listView" ItemsSource="{Binding}" Grid.Row="1" Grid.Column="0">
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
                     <Setter Property="Height" Value="30" />
@@ -16,12 +37,23 @@
             <ListView.View>
                 <GridView>
                     <GridView.Columns>
+                        
+                        <GridViewColumn Header="操作">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <CheckBox></CheckBox>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+
                         <GridViewColumn DisplayMemberBinding="{Binding Path=FileName}" Width="200">
                             <GridViewColumnHeader Content="名称" Padding="5" HorizontalContentAlignment="Left"/>
                         </GridViewColumn>
+                        
                         <GridViewColumn DisplayMemberBinding="{Binding Path=FileExt}" Width="100">
                             <GridViewColumnHeader Content="类型" Padding="5" HorizontalContentAlignment="Left"/>
                         </GridViewColumn>
+                        
                         <!--<GridViewColumn Header="操作">
 
                             <GridViewColumn.CellTemplate>

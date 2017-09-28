@@ -20,16 +20,12 @@
 #include "filehandler.h"
 #include "convert2json.h"
 
-
-
 using namespace std;
 using namespace rapidjson;
-
 
 static const auto deskTopPath = getDesktopPath() + "\\test_desktop";
 static const string targetPath = getDesktopPath() + "\\temp_target";
 static FileHandler fileHandler(deskTopPath, targetPath);
-
 
 void add2Group(string key, FileItem fileItem, map<string, vector<FileItem>> &dataSource) {
 	map<string, vector<FileItem>>::iterator found = dataSource.find(key);
@@ -51,7 +47,6 @@ map<string, vector<FileItem>> group(vector<FileItem> files) {
 	map<string, vector<FileItem>>::iterator it;
 	return dataSource;
 }
-
 
 /*
 void appendSummaryItem(vector<SummaryItem> &list, SummaryItem item) {
@@ -88,13 +83,11 @@ vector<SummaryItem> moveFiles(vector<FileItem> files, string dirPath) {
 }
 */
 
-
 char * GetFileInfoList() {
 	auto files = fileHandler.GetAllDesktopFile();
 	auto fileGroup = group(files);
 	return Convert2Json::GetFileInfoList(fileGroup);
 }
-
 
 /*void moveAll() {
 	auto path = getDesktopPath() + "\\test_desktop";
@@ -123,7 +116,6 @@ char * GetFileInfoList() {
 	delete summaryResult;
 	cout << "done" << endl;
 }*/
-
 
 int main() {
 	auto summaries = fileHandler.ClearAll();
