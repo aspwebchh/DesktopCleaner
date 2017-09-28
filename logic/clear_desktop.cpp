@@ -18,6 +18,7 @@
 #include "md5.h"
 
 #include "filehandler.h"
+#include "convert2json.h"
 
 
 
@@ -87,53 +88,11 @@ vector<SummaryItem> moveFiles(vector<FileItem> files, string dirPath) {
 }
 */
 
-Value createValue(string val, Document & doc) {
-	Value item(kObjectType);
-	Value value;
-	value.SetString( val.c_str(), doc.GetAllocator());
-	return value;
-}
-
-Value createValue(int val, Document & doc) {
-	Value item(kObjectType);
-	Value value;
-	value.SetInt(val);
-	return value;
-}
-
-void files2JSON(vector<FileItem>& files, Document& doc, Value& items) {
-	for (auto fileItem : files) {
-		Value item(kObjectType);
-		item.AddMember("FileName", createValue(fileItem.fileName,doc), doc.GetAllocator());
-		item.AddMember("FileExt", createValue(fileItem.ext, doc), doc.GetAllocator());
-		item.AddMember("FilePath", createValue(fileItem.path, doc), doc.GetAllocator());
-		item.AddMember("FileType", createValue(fileItem.fileType, doc), doc.GetAllocator());
-		items.PushBack(item, doc.GetAllocator());
-	}
-}
 
 char * GetFileInfoList() {
 	auto files = fileHandler.GetAllDesktopFile();
 	auto fileGroup = group(files);
-	Document doc;
-	doc.SetObject();
-	map<string, vector<FileItem>>::iterator it;
-	for (it = fileGroup.begin(); it != fileGroup.end(); it++) {
-		auto ext = it->first;
-		auto files = it->second;
-		Value out(kArrayType);
-		files2JSON(files, doc, out);
-		Value key = createValue(ext,doc);
-		doc.AddMember(key,out, doc.GetAllocator());
-	}
-	StringBuffer buffer;
-	Writer<StringBuffer> writer(buffer);
-	doc.Accept(writer);
-	string jsonString = buffer.GetString();
-	const char *charPtr = jsonString.c_str();
-	char *result = new char[strlen(charPtr)];
-	strcpy(result, charPtr);
-	return result;
+	return Convert2Json::GetFileInfoList(fileGroup);
 }
 
 

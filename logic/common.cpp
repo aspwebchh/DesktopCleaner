@@ -12,7 +12,7 @@
 #include <shlobj.h>
 #include "common.h"
 #include "md5.h"
-
+#include "convert2json.h"
 
 #pragma comment(lib, "shell32.lib")
 
