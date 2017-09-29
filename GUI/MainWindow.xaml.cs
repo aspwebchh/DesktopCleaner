@@ -27,9 +27,7 @@ namespace GUI {
         private bool isCheckAll = false;
         public MainWindow() {
             InitializeComponent();
-
-            this.dataSource = ToTable(FileInfoList());
-            listView.DataContext = dataSource;
+            this.Refesh();
         }
 
         private void Button_Click( object sender, RoutedEventArgs e ) {
@@ -46,6 +44,31 @@ namespace GUI {
             IntPtr intPtr = CFunction.ClearItem(ref param[0]);
             string jsonString = Marshal.PtrToStringAnsi(intPtr);
             MessageBox.Show(jsonString);
+            this.Refesh();
+        }
+
+        private void Button_Click_2( object sender, RoutedEventArgs e ) {
+            var msg = this.GetSelectIdString();
+            MessageBox.Show(msg);
+        }
+
+        private String GetSelectIdString() {
+            var selectIDs = new List<string>();
+            foreach(DataRow row in this.dataSource.Rows) {
+                if( Boolean.Parse( row["IsChecked"].ToString() ) ) {
+                    selectIDs.Add(row ["ID"].ToString()); 
+                }
+            }
+            if( selectIDs.Count == 0 ) {
+                return "";
+            } else {
+                return string.Join(",", selectIDs.ToArray());
+            }
+        }
+
+        private void Refesh() {
+            this.dataSource = ToTable(FileInfoList());
+            listView.DataContext = dataSource;
         }
 
         private DataTable ToTable( List<Dictionary<string, object>> fileList) {

@@ -21,7 +21,7 @@
                 <TextBlock>全选</TextBlock>
             </Button>
 
-            <Button VerticalAlignment="Center" HorizontalAlignment="Left"  Grid.Column="1" Grid.Row="0" Margin="10,0,0,0">
+            <Button VerticalAlignment="Center" HorizontalAlignment="Left"  Grid.Column="1" Grid.Row="0" Margin="10,0,0,0" Click="Button_Click_2">
                 <TextBlock>清理</TextBlock>
             </Button>
         </WrapPanel>
