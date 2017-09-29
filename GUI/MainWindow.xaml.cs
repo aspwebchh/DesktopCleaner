@@ -40,30 +40,40 @@ namespace GUI {
 
         private void Button_Click_1( object sender, RoutedEventArgs e ) {
             var id = ( sender as Button ).CommandParameter as String;
-            var param = Encoding.Default.GetBytes(id.ToCharArray());
-            IntPtr intPtr = CFunction.ClearItem(ref param[0]);
-            string jsonString = Marshal.PtrToStringAnsi(intPtr);
-            MessageBox.Show(jsonString);
+            var result = ClearItem(id);
+            MessageBox.Show(result.Message);
             this.Refesh();
         }
 
         private void Button_Click_2( object sender, RoutedEventArgs e ) {
-            var msg = this.GetSelectIdString();
-            MessageBox.Show(msg);
+            var ids = this.GetSelectIDs();
+            var result = ids.Select(item => {
+                return ClearItem(item);
+            }).Where(item => !item.Success);
+            if( result.Count() == 0 ) {
+                MessageBox.Show("清理完成");
+            } else {
+                MessageBox.Show(result.Count() + "项目清理失败");
+            }
+            this.Refesh();
         }
 
-        private String GetSelectIdString() {
+        private CPPResult ClearItem( string id ) {
+            var param = Encoding.Default.GetBytes(id.ToCharArray());
+            IntPtr intPtr = CFunction.ClearItem(ref param [0]);
+            string jsonString = Marshal.PtrToStringAnsi(intPtr);
+            var result = JsonConvert.DeserializeObject<CPPResult>(jsonString);
+            return result;
+        }
+
+        private List<string> GetSelectIDs() {
             var selectIDs = new List<string>();
             foreach(DataRow row in this.dataSource.Rows) {
                 if( Boolean.Parse( row["IsChecked"].ToString() ) ) {
                     selectIDs.Add(row ["ID"].ToString()); 
                 }
             }
-            if( selectIDs.Count == 0 ) {
-                return "";
-            } else {
-                return string.Join(",", selectIDs.ToArray());
-            }
+            return selectIDs;
         }
 
         private void Refesh() {
