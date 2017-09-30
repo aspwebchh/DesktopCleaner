@@ -47,6 +47,10 @@ namespace GUI {
 
         private void Button_Click_2( object sender, RoutedEventArgs e ) {
             var ids = this.GetSelectIDs();
+            if( ids.Count() == 0 ) {
+                MessageBox.Show("请选择要清理的项目");
+                return;
+            }
             var result = ids.Select(item => {
                 return ClearItem(item);
             }).Where(item => !item.Success);
