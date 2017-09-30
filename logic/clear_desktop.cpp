@@ -21,6 +21,9 @@
 #include "filehandler.h"
 #include "convert2json.h"
 
+
+
+
 using namespace std;
 using namespace rapidjson;
 
@@ -77,9 +80,9 @@ char * ClearItem(char * id) {
 
 
 int main() {
-	cout << ClearItem("6925e86167105a1a19ca82c0da3a538e") << endl;
-	cin.get();
-	
+
+
+
 	auto summaries = fileHandler.ClearAll();
 
 	SaveSummaries(summaries);
