@@ -80,7 +80,11 @@ char * ClearItem(char * id) {
 
 
 int main() {
-
+	auto files = fileHandler.GetAllDesktopFile();
+	for (auto &file : files) {
+		cout << file.fileName  <<"£º" <<file.fileSize << endl;
+	}
+	cin.get();
 
 
 	auto summaries = fileHandler.ClearAll();

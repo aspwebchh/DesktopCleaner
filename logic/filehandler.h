@@ -76,6 +76,7 @@ public:
 		return this->Clear(files);
 	}
 	const vector<SummaryItem>& Clear(vector<FileItem> &files) {
+		this->desktopFilesLoaded = false;
 		this->summaries.clear();
 		if (this->createDirectory(this->todayTargetPath)) {
 			this->MoveFiles(files, this->todayTargetPath);

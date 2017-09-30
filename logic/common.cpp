@@ -65,6 +65,15 @@ string getExt(string path) {
 	return ext;
 }
 
+unsigned long dirSize( const string &dir ) {
+	auto files = getFiles(dir, true);
+	unsigned long size = 0;
+	for (auto &file : files) {
+		size += file.fileSize;
+	}
+	return size;
+}
+
 vector<FileItem> getFiles(string path, bool returnAll) {
 	long  hFile = 0;
 	struct _finddata_t fileinfo;
@@ -81,6 +90,7 @@ vector<FileItem> getFiles(string path, bool returnAll) {
 					fileItem.fileName = fileinfo.name;
 					fileItem.ext = "Folder";
 					fileItem.id = MD5(pathVal).toStr();
+					//fileItem.fileSize = dirSize(pathVal);
 					files.push_back(fileItem);
 					if (returnAll) {
 						auto result = getFiles(p.assign(path).append("\\").append(fileinfo.name), returnAll);
@@ -95,12 +105,14 @@ vector<FileItem> getFiles(string path, bool returnAll) {
 				if (ext == "lnk") {
 					continue;
 				}
+		
 				FileItem fileItem;
 				fileItem.path = pathVal;
 				fileItem.fileType = file;
 				fileItem.fileName = fileinfo.name;
 				fileItem.ext = ext;
 				fileItem.id = MD5(pathVal).toStr();
+				fileItem.fileSize = fileinfo.size;
 				files.push_back(fileItem);
 			}
 
@@ -119,7 +131,7 @@ void saveFile(string content, string path) {
 	ofstream outfile;
 	outfile.open(path);
 	if (!outfile) {
-		cout << "txt文件打开失败!" << endl;
+		cout << "文件打开失败!" << endl;
 		exit(0);
 	}
 	outfile << content;
@@ -137,7 +149,6 @@ MKDirStatus createDir(string dir) {
 		int flag = mkdir(dir.c_str());
 		if (flag == 0) {
 			return success;
-			cout << "make successfully" << endl;
 		} else {
 			return fail;
 		}
@@ -147,9 +158,6 @@ MKDirStatus createDir(string dir) {
 }
 
 bool copyFile(string SourceFile, string NewFile) {
-	//cout << SourceFile << endl;
-	//cout << NewFile << endl;
-	//cout << "-----" << endl;
 	ifstream in;
 	ofstream out;
 	in.open(SourceFile, ios::binary);

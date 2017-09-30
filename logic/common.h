@@ -29,6 +29,7 @@ struct FileItem {
 	string fileName;
 	FileType fileType;
 	string ext;
+	unsigned long fileSize;
 };
 
 struct SummaryItem {
