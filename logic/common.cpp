@@ -90,7 +90,7 @@ vector<FileItem> getFiles(string path, bool returnAll) {
 					fileItem.fileName = fileinfo.name;
 					fileItem.ext = "Folder";
 					fileItem.id = MD5(pathVal).toStr();
-					//fileItem.fileSize = dirSize(pathVal);
+					fileItem.fileSize = 0;//dirSize(pathVal);
 					files.push_back(fileItem);
 					if (returnAll) {
 						auto result = getFiles(p.assign(path).append("\\").append(fileinfo.name), returnAll);

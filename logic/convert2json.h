@@ -39,6 +39,7 @@ private:
 			item.AddMember("FileExt", Convert2Json::createValue(fileItem.ext, doc), doc.GetAllocator());
 			item.AddMember("FilePath", Convert2Json::createValue(fileItem.path, doc), doc.GetAllocator());
 			item.AddMember("FileType", Convert2Json::createValue(fileItem.fileType, doc), doc.GetAllocator());
+			item.AddMember("FileSize", Convert2Json::createValue( int2String( fileItem.fileSize ), doc), doc.GetAllocator());
 			items.PushBack(item, doc.GetAllocator());
 		}
 	}

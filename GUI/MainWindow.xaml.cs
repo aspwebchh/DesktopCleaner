@@ -16,6 +16,7 @@ using System.Windows.Shapes;
 using System.Web.Script.Serialization;
 using Newtonsoft.Json;
 using System.Data;
+using System.Threading;
 
 namespace GUI {
     /// <summary>
@@ -24,10 +25,44 @@ namespace GUI {
     public partial class MainWindow : Window {
 
         private DataTable dataSource;
+        private bool reload = true;
         private bool isCheckAll = false;
         public MainWindow() {
             InitializeComponent();
-            this.Refesh();
+            Refesh();
+            RefreshDirSize();
+        }
+
+        private List<String> GetDirIDs() {
+            var result = dataSource.Rows.Cast<DataRow>()
+                .Where(item => item ["FileExt"].ToString() == "Folder")
+                .Select(item => item ["ID"].ToString())
+                .ToList();
+            return result;
+        }
+
+        private void UpdateDirSize( string id, int dirSize ) {
+            foreach( DataRow row in dataSource.Rows ) {
+                var fileID = row ["ID"].ToString();
+                if( fileID == id ) {
+                    row ["FileSize"] = FormatFileSize(dirSize.ToString());
+                }
+            }
+        }
+
+        private void RefreshDirSize() {
+            var thread = new Thread(() => {
+                var dirIDs = GetDirIDs();
+                dirIDs.ForEach(id => {
+                    var param = Encoding.Default.GetBytes(id.ToCharArray());
+                    var dirSize = CFunction.ComputeDirSize(ref param [0]);
+                    UpdateDirSize(id, dirSize);
+                });
+                Dispatcher.Invoke(() => {
+                    Refesh();
+                });
+            });
+            thread.Start();
         }
 
         private void Button_Click( object sender, RoutedEventArgs e ) {
@@ -72,35 +107,49 @@ namespace GUI {
 
         private List<string> GetSelectIDs() {
             var selectIDs = new List<string>();
-            foreach(DataRow row in this.dataSource.Rows) {
-                if( Boolean.Parse( row["IsChecked"].ToString() ) ) {
-                    selectIDs.Add(row ["ID"].ToString()); 
+            foreach( DataRow row in this.dataSource.Rows ) {
+                if( Boolean.Parse(row ["IsChecked"].ToString()) ) {
+                    selectIDs.Add(row ["ID"].ToString());
                 }
             }
             return selectIDs;
         }
 
         private void Refesh() {
-            this.dataSource = ToTable(FileInfoList());
+            if( reload ) {
+                dataSource = ToTable(FileInfoList());
+                reload = false;
+            }
             listView.DataContext = dataSource;
         }
 
-        private DataTable ToTable( List<Dictionary<string, object>> fileList) {
+        private String FormatFileSize( string b ) {
+            int val = Convert.ToInt32(b);
+            if( val == 0 ) {
+                return "0";
+            }
+            return ( Math.Ceiling(( decimal ) val / 1024) ).ToString();
+        }
+
+        private DataTable ToTable( List<Dictionary<string, object>> fileList ) {
             var dt = new DataTable();
             var fileNameCol = new DataColumn("FileName", Type.GetType("System.String"));
             var fileExtCol = new DataColumn("FileExt", Type.GetType("System.String"));
             var idCol = new DataColumn("ID", Type.GetType("System.String"));
             var checkCol = new DataColumn("IsChecked", Type.GetType("System.Boolean"));
+            var fileSizeCol = new DataColumn("FileSize", Type.GetType("System.String"));
             dt.Columns.Add(fileNameCol);
             dt.Columns.Add(fileExtCol);
             dt.Columns.Add(idCol);
             dt.Columns.Add(checkCol);
+            dt.Columns.Add(fileSizeCol);
             fileList.ForEach(item => {
                 var row = dt.NewRow();
                 row ["FileName"] = item ["FileName"];
                 row ["FileExt"] = item ["FileExt"];
                 row ["ID"] = item ["ID"];
                 row ["IsChecked"] = false;
+                row ["FileSize"] = FormatFileSize(item ["FileSize"].ToString());
                 dt.Rows.Add(row);
             });
             return dt;

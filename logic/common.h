@@ -88,3 +88,5 @@ string current();
 string first_letter(string& sentence);
 
 string getDesktopPath();
+
+unsigned long dirSize(const string &dir);

@@ -53,7 +53,11 @@
                         <GridViewColumn DisplayMemberBinding="{Binding Path=FileExt}" Width="100">
                             <GridViewColumnHeader Content="类型" Padding="5" HorizontalContentAlignment="Left"/>
                         </GridViewColumn>
-                        
+
+                        <GridViewColumn DisplayMemberBinding="{Binding Path=FileSize}" Width="100">
+                            <GridViewColumnHeader Content="大小(KB)" Padding="5" HorizontalContentAlignment="Left"/>
+                        </GridViewColumn>
+
                         <GridViewColumn Header="操作">
 
                             <GridViewColumn.CellTemplate>

@@ -34,7 +34,7 @@ private:
 		auto success = copyFile(fileItem.path, newFilePath);
 		if (success) {
 			this->addSummary(fileItem, newFilePath);
-			remove(fileItem.path.c_str());
+			//remove(fileItem.path.c_str());
 		}
 		return success;
 	}
@@ -47,7 +47,7 @@ private:
 				if (this->createDirectory(dirPath)) {
 					this->MoveFiles(childFiles, dirPath);
 				}
-				_rmdir(file.path.c_str());
+				//_rmdir(file.path.c_str());
 			} else {
 				this->HandleFile(file, path);
 			}

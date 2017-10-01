@@ -78,11 +78,29 @@ char * ClearItem(char * id) {
 	}
 }
 
+int ComputeDirSize(char *id) {
+	string strId = { id };
+	tuple<bool,FileItem> result = fileHandler.FindFileItemByID(strId);
+	auto success = get<0>(result);
+	if (!success) {
+		return -1;
+	}
+	auto fileItem = get<1>(result);
+	if (fileItem.fileType != dir) {
+		return -1;
+	}
+	return dirSize(fileItem.path);
+}
+
 
 int main() {
 	auto files = fileHandler.GetAllDesktopFile();
 	for (auto &file : files) {
-		cout << file.fileName  <<"£º" <<file.fileSize << endl;
+		if (file.fileType == dir) {
+			char * id = new char[file.id.size()];
+			strcpy(id, file.id.c_str());
+			cout << file.fileName << ":"<< ComputeDirSize(id) << endl;
+		}
 	}
 	cin.get();
 
