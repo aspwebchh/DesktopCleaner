@@ -13,22 +13,31 @@
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
         </Grid.ColumnDefinitions>
 
 
         <WrapPanel Grid.Column="0" Grid.Row="0">
-            <Button VerticalAlignment="Center" HorizontalAlignment="Left" Grid.Column="0" Grid.Row="0" Click="Button_Click">
+            <Button   Grid.Column="0" Grid.Row="0" Click="Button_Click">
                 <TextBlock>全选</TextBlock>
             </Button>
 
-            <Button VerticalAlignment="Center" HorizontalAlignment="Left"  Grid.Column="1" Grid.Row="0" Margin="10,0,0,0" Click="Button_Click_2">
+            <Button  Grid.Column="1" Grid.Row="0" Margin="10,0,0,0" Click="Button_Click_2">
                 <TextBlock>清理</TextBlock>
             </Button>
+
         </WrapPanel>
-      
+
+        <WrapPanel Grid.Column="1" Grid.Row="0" HorizontalAlignment="Right">
+            <TextBlock Foreground="Gray" Name="TargetPathView"></TextBlock>
+            <Button  Grid.Column="1" Grid.Row="0" Margin="10,0,8,0" Click="Button_Click_3">
+                <TextBlock>目标路径</TextBlock>
+            </Button>
+        </WrapPanel>
 
 
-        <ListView x:Name="listView" ItemsSource="{Binding}" Grid.Row="1" Grid.Column="0">
+
+        <ListView x:Name="listView" ItemsSource="{Binding}" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
                     <Setter Property="Height" Value="30" />

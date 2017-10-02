@@ -28,9 +28,8 @@
 using namespace std;
 using namespace rapidjson;
 
-const static auto deskTopPath = getDesktopPath() + "\\test_desktop";
-const static string targetPath = getDesktopPath() + "\\temp_target";
-static FileHandler fileHandler(deskTopPath, targetPath);
+const static auto deskTopPath = getDesktopPath();
+static FileHandler fileHandler(deskTopPath, GetTargetPath());
 
 void add2Group(string key, FileItem fileItem, map<string, vector<FileItem>> &dataSource) {
 	map<string, vector<FileItem>>::iterator found = dataSource.find(key);
@@ -56,7 +55,7 @@ map<string, vector<FileItem>> group(vector<FileItem> files) {
 
 void SaveSummaries(const vector<SummaryItem> &summaries) {
 	SummaryResult sumaryResult;
-	sumaryResult.save(summaries, targetPath);
+	sumaryResult.save(summaries, GetTargetPath());
 }
 
 char * GetFileInfoList() {
@@ -79,6 +78,24 @@ char * ClearItem(char * id) {
 	}
 }
 
+char * GetTargetPath() {
+	auto result = ConfigManager::GetTargetPath();
+	auto success = get<0>(result);
+	auto path = get<1>(result);
+	if (success) {
+		auto returnPath = new char[path.size()];
+		strcpy(returnPath, path.c_str());
+		return returnPath;
+	} else {
+		return "";
+	}
+}
+
+void SetTargetPath(char * path) {
+	ConfigManager::SetTargetPath(path);
+	fileHandler.SetTargetPath(path);
+}
+
 int ComputeDirSize(char *id) {
 	string strId = { id };
 	tuple<bool,FileItem> result = fileHandler.FindFileItemByID(strId);
@@ -90,14 +107,10 @@ int ComputeDirSize(char *id) {
 	if (fileItem.fileType != dir) {
 		return -1;
 	}
-	return dirSize(fileItem.path);
+	return dirSize( fileItem.path );
 }
 
-
 int main() {
-	ConfigManager::SetTargetPath("C:\\Users\\Administrator\\Downloads");
-	cin.get();
-
 	auto files = fileHandler.GetAllDesktopFile();
 	for (auto &file : files) {
 		if (file.fileType == dir) {

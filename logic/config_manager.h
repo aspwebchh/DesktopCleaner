@@ -23,7 +23,6 @@ private:
 		return configFilePath;
 	}
 	static bool CreateDir(string dir) {
-		cout << dir << endl;
 		auto status = createDir(dir);
 		if (status != fail ) {
 			return true;
@@ -44,14 +43,18 @@ public:
 	static void SetTargetPath( const string targetPath ) {
 		auto configFilePath = GetConfigFilePath();
 		saveFile(targetPath, configFilePath);
-
-
-		string dir = "C:\\Users\\Administrator\\Desktop\\新建文件夹\\1111\\222\\3333\\222\\3333\\444";
-		bool status = ConfigManager::CreateDir(dir);
-		cout << status << endl;
 	}
 
-	static string GetTargetPath() {
-
+	static tuple<bool, string> GetTargetPath() {
+		auto configFilePath = GetConfigFilePath();
+		auto targetPath = fileContent(configFilePath);
+		if (targetPath.size() == 0) {
+			return{ false, "" };
+		}
+		bool status = ConfigManager::CreateDir(targetPath);
+		if (!status) {
+			return{ false, "" };
+		}
+		return{ true,targetPath };
 	}
 };

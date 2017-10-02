@@ -15,5 +15,12 @@ namespace GUI {
 
         [DllImport("clear_desktop.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
         public extern static int ComputeDirSize( ref byte id );
+
+
+        [DllImport("clear_desktop.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
+        public extern static void SetTargetPath( ref byte path );
+
+        [DllImport("clear_desktop.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
+        public extern static IntPtr GetTargetPath();
     }
 }

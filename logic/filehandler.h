@@ -12,7 +12,7 @@ using namespace std;
 class FileHandler {
 private:
 	string targetPath;
-	string todayTargetPath;
+	//string todayTargetPath;
 	string desktopPath;
 	vector<SummaryItem> summaries;
 	vector<FileItem> allDesktopFiles;
@@ -34,7 +34,7 @@ private:
 		auto success = copyFile(fileItem.path, newFilePath);
 		if (success) {
 			this->addSummary(fileItem, newFilePath);
-			//remove(fileItem.path.c_str());
+			remove(fileItem.path.c_str());
 		}
 		return success;
 	}
@@ -47,7 +47,7 @@ private:
 				if (this->createDirectory(dirPath)) {
 					this->MoveFiles(childFiles, dirPath);
 				}
-				//_rmdir(file.path.c_str());
+				_rmdir(file.path.c_str());
 			} else {
 				this->HandleFile(file, path);
 			}
@@ -63,11 +63,14 @@ private:
 		}
 	}
 
+	string GetTodayTargetPath() {
+		return targetPath + "\\" + allFileDirName();
+	}
+
 public:
 	FileHandler(const string &desktopPath,  const string &targetPath) {
 		this->desktopPath = desktopPath;
 		this->targetPath = targetPath;
-		this->todayTargetPath = targetPath + "\\" + allFileDirName();
 	}
 	const vector<SummaryItem>& Clear(FileItem file) {
 		vector<FileItem> files;
@@ -78,8 +81,8 @@ public:
 	const vector<SummaryItem>& Clear(vector<FileItem> &files) {
 		this->desktopFilesLoaded = false;
 		this->summaries.clear();
-		if (this->createDirectory(this->todayTargetPath)) {
-			this->MoveFiles(files, this->todayTargetPath);
+		if (this->createDirectory(this->GetTodayTargetPath())) {
+			this->MoveFiles(files, this->GetTodayTargetPath());
 		}
 		return this->summaries;
 	}
@@ -108,5 +111,7 @@ public:
 		}
 		return{ false,FileItem{} };
 	}
-	
+	const void SetTargetPath(string path) {
+		this->targetPath = path;
+	}
 };

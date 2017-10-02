@@ -17,6 +17,8 @@ using System.Web.Script.Serialization;
 using Newtonsoft.Json;
 using System.Data;
 using System.Threading;
+using System.IO;
+
 
 namespace GUI {
     /// <summary>
@@ -25,12 +27,36 @@ namespace GUI {
     public partial class MainWindow : Window {
 
         private DataTable dataSource;
-        private bool reload = true;
         private bool isCheckAll = false;
         public MainWindow() {
             InitializeComponent();
-            Refesh();
+
+            if( ViewTargetPath() ) {
+                InitPage();
+            } else {
+                new Thread(() => {
+                    Thread.Sleep(1000);
+                    Dispatcher.Invoke(() => {
+                        MessageBox.Show("请先设置放置被清理文件的位置");
+                    });
+                }).Start();
+
+            }
+        }
+
+        private void InitPage() {
+            Refesh(true);
             RefreshDirSize();
+        }
+
+        private bool ViewTargetPath() {
+            IntPtr intPtr = CFunction.GetTargetPath();
+            string targetPath = Marshal.PtrToStringAnsi(intPtr);
+            if(targetPath == "") {
+                return false;
+            }
+            TargetPathView.Text = targetPath;
+            return true;
         }
 
         private List<String> GetDirIDs() {
@@ -77,7 +103,7 @@ namespace GUI {
             var id = ( sender as Button ).CommandParameter as String;
             var result = ClearItem(id);
             MessageBox.Show(result.Message);
-            this.Refesh();
+            Refesh(true);
         }
 
         private void Button_Click_2( object sender, RoutedEventArgs e ) {
@@ -94,7 +120,7 @@ namespace GUI {
             } else {
                 MessageBox.Show(result.Count() + "项目清理失败");
             }
-            this.Refesh();
+            Refesh(true);
         }
 
         private CPPResult ClearItem( string id ) {
@@ -115,10 +141,9 @@ namespace GUI {
             return selectIDs;
         }
 
-        private void Refesh() {
+        private void Refesh(bool reload = false) {
             if( reload ) {
                 dataSource = ToTable(FileInfoList());
-                reload = false;
             }
             listView.DataContext = dataSource;
         }
@@ -199,6 +224,18 @@ namespace GUI {
                 val.ForEach(item => result.Add(item));
             }
             return result;
+        }
+
+
+
+        private void Button_Click_3( object sender, RoutedEventArgs e ) {
+            var folder = new System.Windows.Forms.FolderBrowserDialog();
+            if( folder.ShowDialog() == System.Windows.Forms.DialogResult.OK ) {
+                var param = Encoding.Default.GetBytes(folder.SelectedPath.ToCharArray());
+                CFunction.SetTargetPath(ref param [0]);
+                InitPage();
+                ViewTargetPath();
+            }
         }
     }
 }

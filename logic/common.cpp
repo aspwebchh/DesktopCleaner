@@ -238,3 +238,11 @@ string getDesktopPath() {
 	}
 	return path;
 }
+
+string fileContent(string path) {
+	ifstream f(path);
+	stringstream buffer;
+	buffer << f.rdbuf();
+	string result(buffer.str());
+	return result;
+}
