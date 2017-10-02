@@ -88,7 +88,7 @@ vector<FileItem> getFiles(string path, bool returnAll) {
 					fileItem.path = pathVal;
 					fileItem.fileType = dir;
 					fileItem.fileName = fileinfo.name;
-					fileItem.ext = "Folder";
+					fileItem.ext = "folder";
 					fileItem.id = MD5(pathVal).toStr();
 					fileItem.fileSize = 0;//dirSize(pathVal);
 					files.push_back(fileItem);
@@ -137,12 +137,6 @@ void saveFile(string content, string path) {
 	outfile << content;
 	outfile.close();
 }
-
-void saveFile(string content) {
-	auto path = "C:\\Users\\ºêºè\\Desktop\\test.txt";
-	saveFile(content, path);
-}
-
 
 MKDirStatus createDir(string dir) {
 	if (access(dir.c_str(), 0) == -1) {

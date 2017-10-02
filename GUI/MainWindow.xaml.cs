@@ -131,6 +131,40 @@ namespace GUI {
             return ( Math.Ceiling(( decimal ) val / 1024) ).ToString();
         }
 
+        private string FileTypeDesc(string fileType) {
+            if( string.IsNullOrEmpty(fileType)) {
+                return "";
+            }
+            fileType = fileType.ToLower();
+
+            var dic = new Dictionary<string, string>();
+            dic.Add("doc", "word文档");
+            dic.Add("xls", "excel文档");
+            dic.Add("ppt", "ppt文档");
+            dic.Add("docx", "word文档");
+            dic.Add("xlsx", "excel文档");
+            dic.Add("pptx", "ppt文档");
+            dic.Add("rar", "rar压缩包");
+            dic.Add("zip", "zip压缩包");
+            dic.Add("html", "html文档");
+            dic.Add("htm", "htm文档");
+            dic.Add("jpg", "jpg图片");
+            dic.Add("gif", "gif图片");
+            dic.Add("png", "png图片");
+            dic.Add("folder", "文件夹");
+            dic.Add("txt", "文本文件");
+            dic.Add("text", "文本文件");
+            dic.Add("xml", "xml文件");
+            dic.Add("lnk", "快捷方式");
+            dic.Add("psd", "ps源文件");
+
+            if(dic.ContainsKey(fileType)) {
+                return dic [fileType];
+            } else {
+                return fileType;
+            }
+        }
+
         private DataTable ToTable( List<Dictionary<string, object>> fileList ) {
             var dt = new DataTable();
             var fileNameCol = new DataColumn("FileName", Type.GetType("System.String"));
@@ -146,7 +180,7 @@ namespace GUI {
             fileList.ForEach(item => {
                 var row = dt.NewRow();
                 row ["FileName"] = item ["FileName"];
-                row ["FileExt"] = item ["FileExt"];
+                row ["FileExt"] = FileTypeDesc( item ["FileExt"].ToString() );
                 row ["ID"] = item ["ID"];
                 row ["IsChecked"] = false;
                 row ["FileSize"] = FormatFileSize(item ["FileSize"].ToString());

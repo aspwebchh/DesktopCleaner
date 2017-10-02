@@ -55,7 +55,6 @@ int getArrayLen(T &array) {
 }
 
 void saveFile(string content, string path);
-void saveFile(string content);
 
 MKDirStatus createDir(string dir);
 

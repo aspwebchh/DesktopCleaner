@@ -20,6 +20,7 @@
 
 #include "filehandler.h"
 #include "convert2json.h"
+#include "config_manager.h"
 
 
 
@@ -27,8 +28,8 @@
 using namespace std;
 using namespace rapidjson;
 
-static const auto deskTopPath = getDesktopPath() + "\\test_desktop";
-static const string targetPath = getDesktopPath() + "\\temp_target";
+const static auto deskTopPath = getDesktopPath() + "\\test_desktop";
+const static string targetPath = getDesktopPath() + "\\temp_target";
 static FileHandler fileHandler(deskTopPath, targetPath);
 
 void add2Group(string key, FileItem fileItem, map<string, vector<FileItem>> &dataSource) {
@@ -94,6 +95,9 @@ int ComputeDirSize(char *id) {
 
 
 int main() {
+	ConfigManager::SetTargetPath("C:\\Users\\Administrator\\Downloads");
+	cin.get();
+
 	auto files = fileHandler.GetAllDesktopFile();
 	for (auto &file : files) {
 		if (file.fileType == dir) {
