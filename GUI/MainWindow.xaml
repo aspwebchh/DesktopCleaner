@@ -5,7 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GUI"
         mc:Ignorable="d"
-        Title="MainWindow" WindowStartupLocation="CenterScreen">
+        Title="桌面清理工具" WindowStartupLocation="CenterScreen"
+        Width="700"
+        MaxHeight="500"
+        >
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="40"></RowDefinition>
@@ -17,21 +20,21 @@
         </Grid.ColumnDefinitions>
 
 
-        <WrapPanel Grid.Column="0" Grid.Row="0">
+        <WrapPanel Grid.Column="0" Grid.Row="0" VerticalAlignment="Center" Margin="5,0,0,0">
             <Button   Grid.Column="0" Grid.Row="0" Click="Button_Click">
-                <TextBlock>全选</TextBlock>
+                <TextBlock Text="全选"></TextBlock>
             </Button>
 
             <Button  Grid.Column="1" Grid.Row="0" Margin="10,0,0,0" Click="Button_Click_2">
-                <TextBlock>清理</TextBlock>
+                <TextBlock Text="清理"></TextBlock>
             </Button>
 
         </WrapPanel>
 
-        <WrapPanel Grid.Column="1" Grid.Row="0" HorizontalAlignment="Right">
-            <TextBlock Foreground="Gray" Name="TargetPathView"></TextBlock>
-            <Button  Grid.Column="1" Grid.Row="0" Margin="10,0,8,0" Click="Button_Click_3">
-                <TextBlock>目标路径</TextBlock>
+        <WrapPanel Grid.Column="1" Grid.Row="0" HorizontalAlignment="Right"  VerticalAlignment="Center">
+            <TextBlock Foreground="Gray" Name="TargetPathView" VerticalAlignment="Center"></TextBlock>
+            <Button  Grid.Column="1" Grid.Row="0" Margin="10,0,5,0" Click="Button_Click_3">
+                <TextBlock Text="目标路径"></TextBlock>
             </Button>
         </WrapPanel>
 
@@ -47,7 +50,8 @@
                 <GridView>
                     <GridView.Columns>
                         
-                        <GridViewColumn Header="操作">
+                        <GridViewColumn>
+                            <GridViewColumnHeader Content="选择" Padding="5" Width="50" HorizontalContentAlignment="Left"/>
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <CheckBox IsChecked="{Binding Path=IsChecked}"></CheckBox>
@@ -55,7 +59,7 @@
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
 
-                        <GridViewColumn DisplayMemberBinding="{Binding Path=FileName}" Width="200">
+                        <GridViewColumn DisplayMemberBinding="{Binding Path=FileName}" Width="350">
                             <GridViewColumnHeader Content="名称" Padding="5" HorizontalContentAlignment="Left"/>
                         </GridViewColumn>
                         
@@ -67,8 +71,8 @@
                             <GridViewColumnHeader Content="大小(KB)" Padding="5" HorizontalContentAlignment="Left"/>
                         </GridViewColumn>
 
-                        <GridViewColumn Header="操作">
-
+                        <GridViewColumn>
+                            <GridViewColumnHeader Content="操作" Padding="5" HorizontalContentAlignment="Left"/>
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <WrapPanel>

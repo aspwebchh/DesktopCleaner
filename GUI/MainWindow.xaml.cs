@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -36,9 +35,9 @@ namespace GUI {
             } else {
                 new Thread(() => {
                     Thread.Sleep(1000);
-                    Dispatcher.Invoke(() => {
+                    Dispatcher.Invoke(new System.Windows.Forms.MethodInvoker(delegate {
                         MessageBox.Show("请先设置放置被清理文件的位置");
-                    });
+                    }));
                 }).Start();
 
             }
@@ -61,7 +60,7 @@ namespace GUI {
 
         private List<String> GetDirIDs() {
             var result = dataSource.Rows.Cast<DataRow>()
-                .Where(item => item ["FileExt"].ToString() == "Folder")
+                .Where(item => item ["FileExt"].ToString().ToLower() == "文件夹")
                 .Select(item => item ["ID"].ToString())
                 .ToList();
             return result;
@@ -82,11 +81,12 @@ namespace GUI {
                 dirIDs.ForEach(id => {
                     var param = Encoding.Default.GetBytes(id.ToCharArray());
                     var dirSize = CFunction.ComputeDirSize(ref param [0]);
+                    
                     UpdateDirSize(id, dirSize);
                 });
-                Dispatcher.Invoke(() => {
-                    Refesh();
-                });
+                Dispatcher.Invoke(new System.Windows.Forms.MethodInvoker(delegate {
+                     Refesh();
+                }));
             });
             thread.Start();
         }
