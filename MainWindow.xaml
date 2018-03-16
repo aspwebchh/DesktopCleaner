@@ -6,13 +6,14 @@
         xmlns:local="clr-namespace:DesktopCleaner"
         mc:Ignorable="d"
         Title="桌面清理工具" WindowStartupLocation="CenterScreen"
-        Width="700"
+        Width="800"
         Height="500"
         >
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="40"></RowDefinition>
             <RowDefinition></RowDefinition>
+            <RowDefinition Height="25"></RowDefinition>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition></ColumnDefinition>
@@ -73,6 +74,11 @@
                             <GridViewColumnHeader Content="大小(KB)" Padding="5" HorizontalContentAlignment="Left"/>
                         </GridViewColumn>
 
+                        <GridViewColumn DisplayMemberBinding="{Binding Path=Last_Access_Time}" Width="100">
+                            <GridViewColumnHeader Content="最后访问时间" Padding="5" HorizontalContentAlignment="Left"/>
+                        </GridViewColumn>
+
+
                         <GridViewColumn>
                             <GridViewColumnHeader Content="操作" Padding="5" HorizontalContentAlignment="Left"/>
                             <GridViewColumn.CellTemplate>
@@ -90,5 +96,8 @@
                 </GridView>
             </ListView.View>
         </ListView>
+
+        <TextBlock Name="MsgBar"  Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" Margin="5,0,0,0"></TextBlock>
+        
     </Grid>
 </Window>

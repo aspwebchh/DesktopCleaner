@@ -7,6 +7,7 @@ using System.Data;
 using System.Threading;
 using DesktopCleaner.model;
 using System.Threading.Tasks;
+using System.Drawing;
 
 
 namespace DesktopCleaner {
@@ -119,7 +120,7 @@ namespace DesktopCleaner {
             if( !result.Item1 ) {
                 MessageBox.Show(result.Item2);
             }
-            Refesh(true);
+            InitPage();
         }
 
         private void Button_Click_2( object sender, RoutedEventArgs e ) {
@@ -134,7 +135,7 @@ namespace DesktopCleaner {
             if( result.Count() != 0 ) {
                 MessageBox.Show(result.Count() + "项目清理失败");
             }
-            Refesh(true);
+            InitPage();
         }
 
         private Tuple<bool,string> ClearItem( string id ) {
@@ -155,6 +156,7 @@ namespace DesktopCleaner {
         private void Refesh(bool reload = false) {
             if( reload ) {
                 dataSource = ToTable( FileModel.FileInfoList(currType) );
+                MsgBar.Text = dataSource.Rows.Count + "个对象";
             }
             listView.DataContext = dataSource;
         }
@@ -177,12 +179,14 @@ namespace DesktopCleaner {
             var checkCol = new DataColumn("IsChecked", Type.GetType("System.Boolean"));
             var fileSizeCol = new DataColumn("FileSize", Type.GetType("System.String"));
             var filePathCol = new DataColumn( "FilePath", Type.GetType( "System.String" ) );
+            var accessTime = new DataColumn( "Last_Access_Time", Type.GetType( "System.String" ) );
             dt.Columns.Add(fileNameCol);
             dt.Columns.Add(fileExtCol);
             dt.Columns.Add(idCol);
             dt.Columns.Add(checkCol);
             dt.Columns.Add(fileSizeCol);
             dt.Columns.Add( filePathCol );
+            dt.Columns.Add( accessTime );
             fileList.ForEach(item => {
                 var row = dt.NewRow();
                 row[ "FilePath" ] = item[ "FilePath" ];
@@ -191,6 +195,7 @@ namespace DesktopCleaner {
                 row ["ID"] = item ["ID"];
                 row ["IsChecked"] = false;
                 row ["FileSize"] = FormatFileSize(item ["FileSize"].ToString());
+                row[ "Last_Access_Time" ] = item[ "Last_Access_Time" ];
                 dt.Rows.Add(row);
             });
             return dt;
@@ -208,7 +213,7 @@ namespace DesktopCleaner {
         private void FileType_SelectionChanged( object sender, SelectionChangedEventArgs e ) {
             var selectValue = FileType.SelectedValue.ToString();
             currType = selectValue;
-            Refesh(true);
+            InitPage();
         }
 
         private void listView_MouseLeftButtonDown( object sender, System.Windows.Input.MouseButtonEventArgs e ) {

@@ -71,6 +71,7 @@ namespace DesktopCleaner.model {
                     item[ "FilePath" ] = fileInfo.FullName;
                     item[ "FileSize" ] = isFile ? ( fileInfo as FileInfo ).Length : 0;
                     item[ "FileType" ] = isFile ? 1 : 0;
+                    item[ "Last_Access_Time" ] = fileInfo.LastAccessTime.ToShortDateString();
                     return item;
                 } )
                 .OrderBy( item => item[ "FileName" ] )
