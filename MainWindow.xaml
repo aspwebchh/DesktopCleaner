@@ -1,0 +1,94 @@
+﻿<Window x:Class="DesktopCleaner.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DesktopCleaner"
+        mc:Ignorable="d"
+        Title="桌面清理工具" WindowStartupLocation="CenterScreen"
+        Width="700"
+        Height="500"
+        >
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+
+
+        <WrapPanel Grid.Column="0" Grid.Row="0" VerticalAlignment="Center" Margin="5,0,0,0">
+            <Button   Click="Button_Click">
+                <TextBlock Text="全选"></TextBlock>
+            </Button>
+
+            <Button  Margin="10,0,0,0" Click="Button_Click_2">
+                <TextBlock Text="清理"></TextBlock>
+            </Button>
+
+            <ComboBox Name="FileType"  Margin="10,0,0,0" SelectionChanged="FileType_SelectionChanged"></ComboBox>
+
+        </WrapPanel>
+
+        <WrapPanel Grid.Column="1" Grid.Row="0" HorizontalAlignment="Right"  VerticalAlignment="Center">
+            <TextBlock Foreground="Gray" Name="TargetPathView" VerticalAlignment="Center" MouseUp="TargetPathView_MouseUp"></TextBlock>
+            <Button  Grid.Column="1" Grid.Row="0" Margin="10,0,5,0" Click="Button_Click_3">
+                <TextBlock Text="目标路径"></TextBlock>
+            </Button>
+        </WrapPanel>
+
+
+
+        <ListView x:Name="listView" ItemsSource="{Binding}" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" MouseDoubleClick="listView_MouseLeftButtonDown">
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="Height" Value="30" />
+                </Style>
+            </ListView.ItemContainerStyle>
+            <ListView.View>
+                <GridView>
+                    <GridView.Columns>
+                        
+                        <GridViewColumn>
+                            <GridViewColumnHeader Content="选择" Padding="5" Width="50" HorizontalContentAlignment="Left"/>
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <CheckBox IsChecked="{Binding Path=IsChecked}"></CheckBox>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+
+                        <GridViewColumn DisplayMemberBinding="{Binding Path=FileName}" Width="350">
+                            <GridViewColumnHeader Content="名称" Padding="5" HorizontalContentAlignment="Left"/>
+                        </GridViewColumn>
+                        
+                        <GridViewColumn DisplayMemberBinding="{Binding Path=FileExt}" Width="100">
+                            <GridViewColumnHeader Content="类型" Padding="5" HorizontalContentAlignment="Left"/>
+                        </GridViewColumn>
+
+                        <GridViewColumn DisplayMemberBinding="{Binding Path=FileSize}" Width="100">
+                            <GridViewColumnHeader Content="大小(KB)" Padding="5" HorizontalContentAlignment="Left"/>
+                        </GridViewColumn>
+
+                        <GridViewColumn>
+                            <GridViewColumnHeader Content="操作" Padding="5" HorizontalContentAlignment="Left"/>
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <WrapPanel>
+                                        <Button  Grid.Row="0" CommandParameter="{Binding Path=ID}" Click="Button_Click_1">
+                                            <TextBlock Text="清理"></TextBlock>
+                                        </Button>
+                                    </WrapPanel>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+
+                        </GridViewColumn>
+                    </GridView.Columns>
+                </GridView>
+            </ListView.View>
+        </ListView>
+    </Grid>
+</Window>
