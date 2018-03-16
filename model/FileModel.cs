@@ -6,12 +6,13 @@ using System.Windows;
 using System.Windows.Controls;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using DesktopCleaner.common;
 
 namespace DesktopCleaner.model {
     public static class FileModel {
 
-        private const string CONFIG_FILE_NAME = "config.txt";
+        private const string CONFIG_FILE_NAME = "config.conf";
 
         public static void SetTargetPath( string path ) {
             using( var file = new FileStream( CONFIG_FILE_NAME, FileMode.Truncate ) ) {
@@ -156,11 +157,37 @@ namespace DesktopCleaner.model {
                 while( Directory.Exists( targetDirPath ) ) {
                     targetDirPath = RenamePathName( targetDirPath );
                 }
-                dirInfo.MoveTo( targetDirPath );
+                MoveDir( dirInfo, dirInfo.FullName, targetDirPath );
+                dirInfo.Delete( true );
             } else {
                 return false;
             }
             return true;
+        }
+
+        private static void MoveDir( DirectoryInfo dirInfo, string srcRootPath,  string descRootPath ) {
+            var descDirPath = dirInfo.FullName.Replace( srcRootPath, descRootPath );
+            if( !Directory.Exists( descDirPath ) ) {
+                Directory.CreateDirectory( descDirPath );
+            }
+
+            var tasks = new List<Task>();
+
+            foreach( var fileItem in dirInfo.GetFiles() ) {
+                var task = Task.Factory.StartNew( delegate {
+                    var descPath = fileItem.FullName.Replace( srcRootPath, descRootPath );
+                    fileItem.MoveTo( descPath );
+                } );
+                tasks.Add( task );
+            }
+            foreach( var dirItem in dirInfo.GetDirectories() ) {
+                var task = Task.Factory.StartNew( delegate {
+                    MoveDir( dirItem, srcRootPath, descRootPath );
+                } );
+                tasks.Add( task );
+            }
+
+            tasks.ForEach( task => task.Wait() );
         }
     }
 }
