@@ -189,5 +189,15 @@ namespace DesktopCleaner.model {
 
             tasks.ForEach( task => task.Wait() );
         }
+
+        public static void DeleteItem( string path ) {
+            if( File.Exists( path ) ) {
+                File.Delete( path );
+            } else {
+                if( Directory.Exists( path ) ) {
+                    Directory.Delete( path, true );
+                }
+            }
+        }
     }
 }

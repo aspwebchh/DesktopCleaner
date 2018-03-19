@@ -8,6 +8,7 @@ using System.Threading;
 using DesktopCleaner.model;
 using System.Threading.Tasks;
 using System.Drawing;
+using System.IO;
 
 
 namespace DesktopCleaner {
@@ -236,6 +237,27 @@ namespace DesktopCleaner {
                 System.Diagnostics.Process.Start( path );
             } catch( Exception ex ) {
                 MessageBox.Show( ex.Message );
+            }
+        }
+
+        private void MenuItem_Click_Clear( object sender, RoutedEventArgs e ) {
+            var selectItem = listView.SelectedItem as DataRowView;
+            var id = selectItem[ "ID" ].ToString();
+            var result = ClearItem( id );
+            if( !result.Item1 ) {
+                MessageBox.Show( result.Item2 );
+            }
+            InitPage();
+        }
+
+        private void MenuItem_Click_Del( object sender, RoutedEventArgs e ) {
+            var selectItem = listView.SelectedItem as DataRowView;
+            var id = selectItem[ "ID" ].ToString();
+            var path = this.FindPathByID( id );
+            MessageBoxResult dr = MessageBox.Show( "文件删除后将不可恢复！", "提示", MessageBoxButton.OKCancel, MessageBoxImage.Question );
+            if( dr == MessageBoxResult.OK ) {
+                FileModel.DeleteItem( path );
+                InitPage();
             }
         }
     }
