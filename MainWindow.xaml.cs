@@ -71,10 +71,12 @@ namespace DesktopCleaner {
         }
 
         private void UpdateDirSize( string id, int dirSize ) {
-            foreach( DataRow row in dataSource.Rows ) {
-                var fileID = row[ "ID" ].ToString();
-                if( fileID == id ) {
-                    row[ "FileSize" ] = FormatFileSize( dirSize.ToString() );
+            lock( dataSource ) {
+                foreach( DataRow row in dataSource.Rows ) {
+                    var fileID = row[ "ID" ].ToString();
+                    if( fileID == id ) {
+                        row[ "FileSize" ] = FormatFileSize( dirSize.ToString() );
+                    }
                 }
             }
         }
