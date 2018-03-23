@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Data;
 using System.Linq;
 using System.Windows;
+using System.Threading;
 
 namespace DesktopCleaner {
     /// <summary>
@@ -11,7 +12,7 @@ namespace DesktopCleaner {
     /// </summary>
     public partial class App : Application {
         public App() {
-            this.DispatcherUnhandledException += App_DispatcherUnhandledException;
+            DispatcherUnhandledException += App_DispatcherUnhandledException;
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
         }
 

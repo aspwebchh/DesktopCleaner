@@ -34,8 +34,11 @@ namespace DesktopCleaner {
                         MessageBox.Show( "请先设置放置被清理文件的位置" );
                     } ) );
                 } );
-
             }
+
+            ThreadPool.QueueUserWorkItem( delegate {
+                model.Indexer.Run();
+            } );
         }
 
         private void InitTypes() {
