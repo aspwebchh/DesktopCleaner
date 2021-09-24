@@ -25,13 +25,14 @@ namespace DesktopCleaner {
 
             InitTypes();
 
-            if( ViewTargetPath() ) {
+            var viewResult = ViewTargetPath();
+            if (viewResult.Item1) {
                 InitPage();
             } else {
                 ThreadPool.QueueUserWorkItem( delegate {
                     Thread.Sleep( 1000 );
                     Dispatcher.Invoke( new System.Windows.Forms.MethodInvoker( delegate {
-                        MessageBox.Show( "请先设置放置被清理文件的位置" );
+                        MessageBox.Show( viewResult.Item2 );
                     } ) );
                 } );
             }
@@ -57,13 +58,13 @@ namespace DesktopCleaner {
             RefreshDirSize();
         }
 
-        private bool ViewTargetPath() {
+        private Tuple<bool,string> ViewTargetPath() {
             string targetPath = FileModel.GetTargetPath();
             if( targetPath == "" ) {
-                return false;
+                return Tuple.Create(false, "请先设置放置被清理文件的位置");
             }
             TargetPathView.Text = targetPath;
-            return true;
+            return Tuple.Create(true,"");
         }
 
         private List<string> GetDirIDs() {

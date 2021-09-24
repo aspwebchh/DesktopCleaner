@@ -25,7 +25,12 @@ namespace DesktopCleaner.model {
         public static string GetTargetPath() {
             using( var file = new FileStream( CONFIG_FILE_NAME, FileMode.OpenOrCreate ) ) {
                 var sr = new StreamReader( file );
-                return sr.ReadToEnd();
+                string path = sr.ReadToEnd();
+                if(!Directory.Exists(path))
+                {
+                    return string.Empty;
+                }
+                return path;
             }
         }
 
